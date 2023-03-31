@@ -178,8 +178,8 @@ class Client:
 		# TO COMPLETE
 		#-------------
 		if requestCode == self.SETUP:
-			threading.Thread(target=self.recvRtspReply).start()
 			self.connectRTSP = True
+			threading.Thread(target=self.recvRtspReply).start()
 			# Update RTSP sequence number.
 			# ...
 			self.rtspSeq = self.rtspSeq + 1
@@ -231,7 +231,8 @@ class Client:
 		while self.connectRTSP:
 			reply = self.rtspSocket.recv(1024)
 			if reply:
-				self.parseRtspReply(reply.decode(FORMAT))
+				print("Data received:\n" + reply.decode("utf-8"))
+				self.parseRtspReply(reply.decode("utf-8"))
 
 	
 	def parseRtspReply(self, data):
@@ -239,19 +240,19 @@ class Client:
 		reply = data.split('\n')
 		
 		# Get code
-		code = int(reply[0].split(' ')[1])
+		code = int((reply[0].split(' '))[1])
 
 		# Get the RTSP sequence number 
-		seq = int(reply[1].split(' ')[1])
+		seq = int((reply[1].split(' '))[1])
 
 		# Get session 
-		session = int(reply[2].split(' ')[1])
+		session = int((reply[2].split(' '))[1])
 
 		if code == 200 and self.rtspSeq == seq:
 			if self.sessionId == 0:
 				# new RTSP session ID
 				self.sessionId = session
-			elif self.sessionId == session:
+			if self.sessionId == session:
 				if self.requestSent == self.SETUP:
 					# change state
 					self.state = self.READY
@@ -308,10 +309,10 @@ class Client:
 
 	def handler(self):
 		"""Handler on explicitly closing the GUI window."""
-		if self.playingState == self.PLAYING:
+		if self.state == self.PLAYING:
 			self.pauseMovie()
 		try:
 			self.exitClient() # Close the client socket
 		except:
 			pass
-		self.window.destroy() # Close the GUI
+		self.master.destroy() # Close the GUI

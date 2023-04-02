@@ -12,8 +12,6 @@ if __name__ == "__main__":
 	except:
 		print("[Usage: ClientLauncher.py Server_name Server_port RTP_port Video_file]\n")	
 	
-	root = Tk()
-	
 	# Create a new client
 	print('Normal version: 1')
 	print('Extend version: 2')
@@ -27,7 +25,6 @@ if __name__ == "__main__":
 			root = Tk()
 			app = Client2(root, serverAddr, serverPort, rtpPort, fileName)
 			break
-
 		else:
 			print('Choose again:')
 
